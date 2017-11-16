@@ -3,7 +3,7 @@
 Allows the purge/clear/flush of the PHP OpCache via the CLI and Magento2 Backend
 
 
-##Why
+## Why
 Because PHP OpCache is almost the de facto standard in current server/application setups. Most users/developers are 
 usinga simple PHP script to clear the cache or simply ignore this cache. With this extension you can use it in your 
 build/deployment process via the CLI. Also provided is an extension to the Magento2 backend. With a simple click you can
