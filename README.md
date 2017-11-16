@@ -14,7 +14,8 @@ I'm a DevOps engineer for a full service digital agency in the Netherlands. When
 scripts / extentions and tools. If you appriciate my work, please be so kind to donate so I can keep drinking beer.
 
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](info@webfixit.nl)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UDG2ZGDZ9TMEE)
+
 
 
 ### Additional cache management extended
