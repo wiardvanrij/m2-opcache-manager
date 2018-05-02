@@ -36,5 +36,3 @@ class Status extends \Symfony\Component\Console\Command\Command
     }
 
 }
-
-
