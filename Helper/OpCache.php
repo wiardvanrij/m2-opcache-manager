@@ -27,5 +27,4 @@ class OpCache
 
         return $result;
     }
-
 }
