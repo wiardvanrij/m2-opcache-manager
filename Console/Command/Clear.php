@@ -98,7 +98,7 @@ class Clear extends \Symfony\Component\Console\Command\Command
 
         $this->disallowFlush();
 
-        return isset($response['result']) ?:  "Failed to get a result from the OpCache page";
+        return isset($response['result']) ? $response['result'] :  "Failed to get a result from the OpCache page";
 
     }
 
