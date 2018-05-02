@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
         <route id="opcache" frontName="opcache">
-            <module name="Webfixit_Opcache" before="Magento_Backend" />
+            <module name="Webfixit_OpCache" before="Magento_Backend" />
         </route>
     </router>
 </config>

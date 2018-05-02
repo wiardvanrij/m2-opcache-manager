@@ -3,8 +3,8 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="clear" xsi:type="object">Webfixit\OpCache\Model\OpCache\Clear</item>
-                <item name="status" xsi:type="object">Webfixit\OpCache\Model\OpCache\Status</item>
+                <item name="clear" xsi:type="object">Webfixit\OpCache\Console\Command\Clear</item>
+                <item name="status" xsi:type="object">Webfixit\OpCache\Console\Command\Status</item>
             </argument>
         </arguments>
     </type>

@@ -7,22 +7,25 @@ namespace Webfixit\OpCache\Helper;
 
 class OpCache
 {
+
     /**
      * @return bool
      */
     public function clear()
     {
         $result = opcache_reset();
-        
+
         return $result;
     }
-    
-    
+
+    /**
+     * @return array
+     */
     public function status()
     {
         $result = opcache_get_status(false);
-        
+
         return $result;
     }
-    
+
 }
