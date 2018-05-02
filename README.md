@@ -16,6 +16,14 @@ scripts / extentions and tools. If you appriciate my work, please be so kind to 
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UDG2ZGDZ9TMEE)
 
+## How the CLI works
+It is simply not possible to clear the php OpCache via the CLI. I have created a workaround for that. Instead of actually
+ running a static PHP file from the CLI, we do a curl request. Because it is a curl request, your webserver actually will 
+ parse this request via the "php cgi". This way we can clear it. 
+ 
+ The issue we now have is that we do not want robots or "hackers" to be able to clear this cache. Therefor on execution we 
+ write a sort of "lock" file. Obviously removing it after clearing. This way "direct access" to this static page is not possible.
+
 
 
 ### Additional cache management extended
