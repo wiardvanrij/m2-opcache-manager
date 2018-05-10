@@ -9,23 +9,28 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use \Webfixit\OpCache\Helper;
+use Webfixit\OpCache\Helper\OpCache;
 
 class Clear extends Action
 {
 
     /**
-     * @var Helper\OpCache
+     * @var OpCache
      */
     private $opcache;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * Clear constructor.
+     *
+     * @param Context $context
+     * @param OpCache $opCache
      */
     public function __construct(
-        Context $context
+        Context $context,
+        OpCache $opCache
     ) {
         parent::__construct($context);
-        $this->opcache = new Helper\OpCache();
+        $this->opcache = $opCache;
     }
 
     /**
@@ -36,9 +41,9 @@ class Clear extends Action
         $result = $this->opcache->clear();
 
         if ($result) {
-            $this->messageManager->addSuccessMessage('Cleared OpCache successfully');
+            $this->messageManager->addSuccessMessage(__('Cleared OpCache successfully'));
         } else {
-            $this->messageManager->addErrorMessage('Failed to clear; OpCache not present or enabled?');
+            $this->messageManager->addErrorMessage(__('Failed to clear; OpCache not present or enabled?'));
         }
 
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);

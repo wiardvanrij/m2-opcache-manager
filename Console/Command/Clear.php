@@ -5,63 +5,61 @@
  */
 namespace Webfixit\OpCache\Console\Command;
 
-use \Magento\Framework\HTTP\Client\Curl;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Filesystem;
+use Magento\Framework\HTTP\Client\Curl;
+use Magento\Store\Model\StoreManagerInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Clear extends \Symfony\Component\Console\Command\Command
+class Clear extends Command
 {
 
     /**
      * @var StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * @var \Magento\Framework\Filesystem
      */
-    protected $filesystem;
+    private $filesystem;
 
     /**
      * @var Curl
      */
-    protected $curl;
+    private $curl;
 
     /**
-     * Opcache constructor.
-     *
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Filesystem $filesystem
-     * @param \Magento\Framework\HTTP\Client\Curl $curl
+     * Clear constructor.
+     * @param StoreManagerInterface $storeManager
+     * @param Filesystem            $filesystem
+     * @param Curl                  $curl
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         Filesystem $filesystem,
         Curl $curl
     ) {
-        $this->filesystem = $filesystem;
+        $this->filesystem   = $filesystem;
         $this->storeManager = $storeManager;
-        $this->curl = $curl;
+        $this->curl         = $curl;
+
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this->setName('opcache:clear')
-             ->setDescription('Clears the OpCache');
+        $this->setName('opcache:clear')->setDescription('Clears the OpCache');
 
         parent::configure();
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return \Symfony\Component\Console\Output\OutputInterface|null
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -98,18 +96,7 @@ class Clear extends \Symfony\Component\Console\Command\Command
 
         $this->disallowFlush();
 
-        return isset($response['result']) ? $response['result'] :  "Failed to get a result from the OpCache page";
-
-    }
-
-    private function disallowFlush()
-    {
-        $path = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath();
-        $file = $path . '/allow-opcache.flush';
-
-        if (file_exists($file)) {
-            unlink($file);
-        }
+        return isset($response['result']) ? $response['result'] : "Failed to get a result from the OpCache page";
     }
 
     /**
@@ -117,17 +104,43 @@ class Clear extends \Symfony\Component\Console\Command\Command
      */
     private function allowFlush()
     {
-        $path = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath();
-        $file = $path . '/allow-opcache.flush';
-
+        $fileName = 'allow-opcache.flush';
         try {
-            $fopen = fopen($file, "w");
-            fwrite($fopen, date('m/d/Y h:i:s a'));
-            fclose($fopen);
+            $writer = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+            $file = $writer->openFile($fileName, 'w');
+            try {
+                $file->lock();
+                try {
+                    $file->write(date('m/d/Y h:i:s a'));
+                }
+                finally {
+                    $file->unlock();
+                }
+            }
+            finally {
+                $file->close();
+            }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
 
+        return true;
+    }
+
+    /**
+     * @return bool|string
+     */
+    private function disallowFlush()
+    {
+        $fileName = 'allow-opcache.flush';
+        try {
+            $writer = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
+            if ($writer->isExist($fileName)) {
+                $writer->delete($fileName);
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
         return true;
     }
 }
