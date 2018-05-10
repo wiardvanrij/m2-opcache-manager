@@ -22,6 +22,7 @@ class Status extends Command
         OpCache $opCacheHelper
     ) {
         $this->opCacheHelper = $opCacheHelper;
+        parent::__construct();
     }
 
     protected function configure()
