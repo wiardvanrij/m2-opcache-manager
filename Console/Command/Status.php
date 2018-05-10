@@ -5,34 +5,41 @@
  */
 namespace Webfixit\OpCache\Console\Command;
 
-use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Webfixit\OpCache\Helper;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Webfixit\OpCache\Helper\OpCache;
 
-class Status extends \Symfony\Component\Console\Command\Command
+class Status extends Command
 {
+
+    /**
+     * @var OpCache
+     */
+    private $opCacheHelper;
+
+    public function __construct(
+        OpCache $opCacheHelper
+    ) {
+        $this->opCacheHelper = $opCacheHelper;
+        parent::__construct();
+    }
 
     protected function configure()
     {
-        $this->setName('opcache:status')
-             ->setDescription('Shows the OpCache status');
+        $this->setName('opcache:status')->setDescription('Shows the OpCache status');
 
         parent::configure();
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return \Symfony\Component\Console\Output\OutputInterface|null
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var Helper\OpCache $opcache */
-        $opCache = new Helper\OpCache();
-        $result = $opCache->status();
+        $result = $this->opCacheHelper->status();
         $output->writeln(print_r($result, true));
     }
-
 }

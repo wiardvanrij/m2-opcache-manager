@@ -2,61 +2,67 @@
 namespace Webfixit\OpCache\Controller\Action;
 
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use \Webfixit\OpCache\Helper;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Filesystem;
+use Webfixit\OpCache\Helper\OpCache;
 
 class Clear extends Action
 {
     /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
+     * @var JsonFactory
      */
-    protected $_jsonFactory;
+    private $jsonFactory;
 
     /**
-     * @var \Webfixit\OpCache\Helper\OpCache
+     * @var OpCache
      */
     private $opcache;
 
     /**
-     * @var \Magento\Framework\Filesystem
+     * @var Filesystem
      */
-    protected $fileSystem;
+    private $fileSystem;
 
     /**
-     * Index constructor.
-     *
-     * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
+     * Clear constructor.
+     * @param Context     $context
+     * @param JsonFactory $jsonFactory
+     * @param OpCache     $opCache
+     * @param Filesystem  $filesystem
      */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
+        Context $context,
+        JsonFactory $jsonFactory,
+        OpCache $opCache,
+        Filesystem $filesystem
     ) {
-        $this->opcache = new Helper\OpCache();
-        $this->_jsonFactory = $jsonFactory;
+        $this->opcache        = $opCache;
+        $this->jsonFactory    = $jsonFactory;
         $this->_objectManager = $context->getObjectManager();
-        $this->fileSystem = $this->_objectManager->get('Magento\Framework\Filesystem');
+        $this->fileSystem     = $filesystem;
 
         return parent::__construct($context);
     }
 
     public function execute()
     {
-        $path = $this->fileSystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath();
-        $file = $path . '/allow-opcache.flush';
+        $reader = $this->fileSystem->getDirectoryRead(DirectoryList::VAR_DIR);
+        $file   = 'allow-opcache.flush';
 
-        if (file_exists($file)) {
+        if ($reader->isExist($file)) {
             $result = $this->opcache->clear();
 
             if ($result) {
-                $message = 'Cleared OpCache successfully';
+                $message = __('Cleared OpCache successfully');
             } else {
-                $message = 'Failed to clear; OpCache not present or enabled?';
+                $message = __('Failed to clear; OpCache not present or enabled?');
             }
         } else {
-            $message = 'Not allowed to execute this';
+            $message = __('Not allowed to execute this');
         }
 
-        return $this->_jsonFactory->create()->setData(['result' => $message]);
+        return $this->jsonFactory->create()->setData(['result' => $message]);
     }
 }
