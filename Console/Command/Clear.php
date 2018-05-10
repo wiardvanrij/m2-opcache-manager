@@ -15,6 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Clear extends Command
 {
+    const FILENAME_OPCACHE_FLUSH = 'allow-opcache.flush';
 
     /**
      * @var StoreManagerInterface
@@ -22,7 +23,7 @@ class Clear extends Command
     private $storeManager;
 
     /**
-     * @var \Magento\Framework\Filesystem
+     * @var Filesystem
      */
     private $filesystem;
 
@@ -33,6 +34,7 @@ class Clear extends Command
 
     /**
      * Clear constructor.
+     *
      * @param StoreManagerInterface $storeManager
      * @param Filesystem            $filesystem
      * @param Curl                  $curl
@@ -57,9 +59,7 @@ class Clear extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -104,10 +104,9 @@ class Clear extends Command
      */
     private function allowFlush()
     {
-        $fileName = 'allow-opcache.flush';
         try {
             $writer = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            $file = $writer->openFile($fileName, 'w');
+            $file = $writer->openFile(self::FILENAME_OPCACHE_FLUSH, 'w');
             try {
                 $file->lock();
                 try {
@@ -132,11 +131,10 @@ class Clear extends Command
      */
     private function disallowFlush()
     {
-        $fileName = 'allow-opcache.flush';
         try {
             $writer = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
-            if ($writer->isExist($fileName)) {
-                $writer->delete($fileName);
+            if ($writer->isExist(self::FILENAME_OPCACHE_FLUSH)) {
+                $writer->delete(self::FILENAME_OPCACHE_FLUSH);
             }
         } catch (\Exception $e) {
             return $e->getMessage();
