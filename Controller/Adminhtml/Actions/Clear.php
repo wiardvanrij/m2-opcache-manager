@@ -8,7 +8,6 @@ namespace Webfixit\OpCache\Controller\Adminhtml\Actions;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
-use \Webfixit\OpCache\Helper;
 use Webfixit\OpCache\Helper\OpCache;
 
 class Clear extends Action
