@@ -2,6 +2,9 @@
 
 Allows the purge/clear/flush of the PHP OpCache via the CLI and Magento2 Backend
 
+# Unmaintained
+I still see a lot of activity on this repository (usage). I just wanted to note that I'm not maintaining this plugin anymore. This is because I'm not working with Magento at this point. Therefore I have no interest in making new changes/features.
+Though feel free to make pull-requests and I will process these. 
 
 ## Why
 Because PHP OpCache is almost the de facto standard in current server/application setups. Most users/developers are 
